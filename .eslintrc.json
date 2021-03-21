@@ -1,0 +1,40 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["plugin:react/recommended", "prettier", "plugin:prettier/recommended", "eslint:recommended"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "prettier/prettier": 2,
+    "react/jsx-uses-react": 0,
+    "react/react-in-jsx-scope": 0,
+    "react/prop-types": 1,
+    "arrow-body-style": 0,
+    "prefer-arrow-callback": 0,
+    "max-len": [2, 120],
+    "no-var": 2,
+    "no-multiple-empty-lines": 2,
+    "quotes": [2, "single", "avoid-escape"],
+    "no-empty-pattern": 2,
+    "no-empty-character-class": 2,
+    "arrow-parens": 0,
+    "no-console": [1, { "allow": ["info", "warn", "error", "table"] }],
+    "comma-dangle": 2,
+    "curly": 0,
+    "no-duplicate-imports": 2,
+    "no-unused-vars": 1,
+    "no-undef": 0,
+    "no-empty": 1,
+    "no-eval": 2,
+    "no-unused-expressions": 1,
+    "semi": 2
+  }
+}
