@@ -61,3 +61,7 @@ header h6 {
     flex-direction: row;
   }
 }
+
+.firebaseui-tos.firebaseui-tospp-full-message {
+  color: #fff;
+}
