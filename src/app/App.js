@@ -8,6 +8,7 @@ import Header from 'components/Header';
 import Preloader from 'components/Preloader';
 import theme from './theme';
 import style from './App.module.css';
+import ManagementCalendar from 'components/FullCalendar';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -20,14 +21,17 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={style.app}>
+      <div className={isSignedIn ? style.app : style.appCalendar}>
         <Header title={"Student's education plan app"} />
         <main className={isShowPreloader ? style.mainPreloader : null}>
-          {isShowPreloader ? (
+          {/* {isShowPreloader ? (
             <Preloader />
           ) : (
-            <>{isSignedIn ? null : <StyledFirebaseAuth uiConfig={firebaseUiConfig} firebaseAuth={firebase.auth()} />}</>
-          )}
+            <>{isSignedIn ? null : */}
+          {/* <StyledFirebaseAuth uiConfig={firebaseUiConfig} firebaseAuth={firebase.auth()} /> */}
+          {/* }</> */}
+          {/* )} */}
+          <ManagementCalendar />
         </main>
       </div>
     </ThemeProvider>

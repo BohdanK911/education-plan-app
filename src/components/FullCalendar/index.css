@@ -1,0 +1,24 @@
+.management-calendar {
+  color: rgba(255, 255, 255, 0.8);
+}
+/* 
+.management-calendar-sidebar-button {
+  width: 3em;
+  height: 3em;
+  padding: 0 !important;
+  border-radius: 5000px !important;
+} */
+.fc-header-toolbar {
+  padding-left: 4em;
+}
+.makeStyles-root-1 {
+  position: absolute;
+}
+
+.MuiToolbar-root {
+  display: block !important;
+  padding-left: 1em !important;
+}
+.makeStyles-menuButton-4 {
+  margin-top: -3px !important;
+}
