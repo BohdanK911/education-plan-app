@@ -22,3 +22,44 @@
 .makeStyles-menuButton-4 {
   margin-top: -3px !important;
 }
+.fc-daygrid-day-top {
+  padding: 0.4em;
+  font-size: 1.2em;
+}
+.MuiTypography-body1 {
+  font-size: 1.5em;
+}
+.fc-popover-header {
+  background-color: transparent !important;
+}
+
+.fc-popover {
+  padding: 0.4em;
+
+  color: var(--dark-high-emphasis);
+  border-radius: 0.4em;
+  border-top-left-radius: 0;
+}
+.fc-popover-body {
+  padding: 0.5em 0 !important;
+}
+.fc-daygrid-event {
+  background-color: transparent !important;
+  border-bottom: 2px solid var(--dark-high-emphasis) !important;
+  padding: 0.4em;
+  border-radius: 0em !important;
+}
+
+.fc-scrollgrid {
+  border-radius: 0.4em;
+  border-bottom-right-radius: 0 !important;
+}
+
+.fc-theme-standard td {
+  border-radius: 0.4em !important;
+  border-top-right-radius: 0 !important;
+}
+
+.fc-col-header-cell {
+  padding: 1em !important;
+}

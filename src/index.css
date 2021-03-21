@@ -61,3 +61,11 @@ header h6 {
     flex-direction: row;
   }
 }
+:root {
+  --fc-border-color: #849d65de;
+  --high-emphasis: #ffffffde;
+  --medium-emphasis: #ffffff99;
+  --disabled-emphasis: #ffffff38;
+  --dark-high-emphasis: #000000de;
+  --fc-page-bg-color: #b3d689fa;
+}

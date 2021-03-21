@@ -185,29 +185,6 @@ const ManagementCalendar = ({ window }) => {
             </List>
           </Drawer>
         </div>
-        {/* {sidebar ? (
-          <div className={'management-calendar-sidebar'}>
-            <div className={'management-calendar-sidebar__instructions'}>
-              <h2 className={'management-calendar-sidebar__instructions-title'}>Instructions</h2>
-              <ul className={'management-calendar-sidebar__instructions-list'}>
-                <li>Select dates and you will be prompted to create a new event</li>
-                <li>Drag, drop, and resize events</li>
-                <li>Click an event to delete it</li>
-              </ul>
-            </div>
-
-            <div className={'demo-app-sidebar-section'}>
-              <label>
-                <input
-                  type={'checkbox'}item
-              </Typography>
-              <ul className={'management-calendar-sidebar__all-events-list'}>
-               
-              </ul>
-            </div>
-          </div>
-        ) : null} */}
-
         <section className={'management-calendar-main'}>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -233,9 +210,9 @@ const ManagementCalendar = ({ window }) => {
             eventRemove={function(){}}
             */
             eventChange={() => alert('changed')}
-            eventBackgroundColor={'#111'}
-            eventBorderColor={'red'}
-            eventTextColor={'yellow'}
+            eventBackgroundColor={'#61892f'}
+            eventBorderColor={'transparent'}
+            eventTextColor={'#222629'}
             eventColor={'#000'}
           />
         </section>
