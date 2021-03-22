@@ -12,7 +12,8 @@ import {
   Paper,
   Grow
 } from '@material-ui/core';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const ProfileTile = ({ photo, children: title }) => {
   const [open, setOpen] = useState(false);

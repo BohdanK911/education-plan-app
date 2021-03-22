@@ -15,9 +15,7 @@ const App = () => {
   const isSignedIn = useSignedInState(); // Local signed-in state.
   const isShowPreloader = isLoading || typeof isSignedIn !== 'boolean';
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  useEffect(() => setIsLoading(false), []);
 
   return (
     <ThemeProvider theme={theme}>

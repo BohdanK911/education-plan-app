@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FullCalendar, { formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -24,7 +24,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import './index.css';
-import { Checkbox } from '@material-ui/core';
+import { Checkbox, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import Modal from 'components/Modal';
 
 const drawerWidth = 350;
 
@@ -87,11 +88,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ManagementCalendar = ({ window }) => {
-  const [state, setState] = useState({ weekendVisible: true, currentEvents: [], sidebar: false });
-  const { weekendVisible, currentEvents, sidebar } = state;
+  const [state, setState] = useState({
+    weekendVisible: true,
+    currentEvents: [],
+    sideBarIsOpen: false,
+    modalDeleteEventIsOpen: false,
+    modalSelectEventIsOpen: false,
+    modalEditEventIsOpen: false,
+    modalEventTitleSelectIsOpen: false,
+    currentEventClick: {
+      // remove: () => alert('delete'),
+      title: ''
+    },
+    currentEventSelectClick: {
+      title: '',
+      allDay: true,
+      end: '',
+      start: '',
+      id: 1,
+      calendar: ''
+    }
+  });
+
   const classes = useStyles();
   const theme = useTheme();
-  const handleState = (name, value) => setState(state => ({ ...state, [name]: value }));
 
   const handleEventContent = ({ timeText, event: { title } }) => (
     <>
@@ -99,40 +119,134 @@ const ManagementCalendar = ({ window }) => {
       <Typography>{title}</Typography>
     </>
   );
-  const handleEventClick = ({ event: { remove, title } }) => {
-    if (confirm(`Delete the event '${title}'?`)) remove();
+
+  const handleEventModalDeleteClick = ({ event: { remove, title } }) =>
+    setState(state => ({ ...state, currentEventClick: { remove, title }, modalDeleteEventIsOpen: true }));
+
+  const handleEventModalDeleteCancel = () => setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
+
+  const handleEventModalSelectCancel = () => setState(state => ({ ...state, modalSelectEventIsOpen: false }));
+
+  const handleEventModalEditCancel = () => setState(state => ({ ...state, modalSelectEventIsOpen: false }));
+
+  const handleEventModalDeleteSubmit = () => {
+    setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
   };
 
-  const handleDateSelect = ({ view: { calendar }, startStr: start, endStr: end, allDay }) => {
-    let title = prompt('Enter a new title');
+  const handleEventModalEditSubmit = () => {
+    setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
+  };
+  // console.log();
 
-    calendar.unselect(); // clear date selection
-    if (title) calendar.addEvent({ id: createEventId(), title, start, end, allDay });
+  const handleEventModalSelectSubmit = () => {
+    const { title, start, calendar, end, allDay } = state.currentEventSelectClick;
+
+    if (state.currentEventSelectClick.title)
+      calendar.addEvent({
+        id: createEventId(),
+        title,
+        start,
+        end,
+        allDay
+      });
+    setState(state => ({
+      ...state,
+      modalSelectEventIsOpen: false,
+      currentEventSelectClick: { ...state.currentEventSelectClick, title: '' }
+    }));
   };
 
-  const handleSideBarOpen = () => handleState('sidebar', !sidebar);
-  const handleEventsSet = events => handleState('currentEvents', events);
+  const handleEventModalSelectClick = ({ view: { calendar }, startStr: start, endStr: end, allDay }) =>
+    setState(state => ({
+      ...state,
+      currentEventSelectClick: { ...state.currentEventSelectClick, start, end, allDay, calendar },
+      modalSelectEventIsOpen: true
+    }));
+
+  const handleEventModalEditClick = ({ view: { getCurrentData } }) => {
+    console.log(getCurrentData());
+  };
+
+  const handleSideBarOpen = () => setState(state => ({ ...state, sideBarIsOpen: !state.sideBarIsOpen }));
+
+  const handleEventsSet = events => setState(state => ({ ...state, currentEvents: events }));
+
+  const modalGropeArr = [
+    {
+      isOpen: state.modalDeleteEventIsOpen,
+      onCancel: handleEventModalDeleteCancel,
+      onSubmit: handleEventModalDeleteSubmit,
+      title: `Did you sure that you wanna delete ${state.currentEventClick.title} event?`,
+      buttonSubmitText: 'Delete'
+    },
+    {
+      isOpen: state.modalEditEventIsOpen,
+      onCancel: handleEventModalEditCancel,
+      onSubmit: handleEventModalEditSubmit,
+      title: 'You can easily change the event'
+    },
+    {
+      isOpen: state.modalSelectEventIsOpen,
+      onCancel: handleEventModalSelectCancel,
+      onSubmit: handleEventModalSelectSubmit,
+      title: (
+        <>
+          <DialogTitle id={'form-dialog-title'}> Please write a event title.</DialogTitle>
+          {/* <DialogContent> */}
+          {/* <DialogContentText>
+              <Typography variant={'body2'} component={'p'}></Typography>
+            </DialogContentText> */}
+          <TextField
+            autoFocus
+            margin={'dense'}
+            label={'Event text'}
+            type={'text'}
+            fullWidth
+            value={state.currentEventSelectClick.title}
+            onChange={({ target: { value } }) =>
+              setState(state => ({
+                ...state,
+                currentEventSelectClick: { ...state.currentEventSelectClick, title: value }
+              }))
+            }
+          />
+          {/* </DialogContent> */}
+        </>
+      )
+    }
+  ];
 
   return (
     <page className={'management-calendar'}>
+      {modalGropeArr.map(({ isOpen, onCancel, onSubmit, title, buttonSubmitText }, idx) => (
+        <Modal
+          isOpen={isOpen}
+          onCancel={onCancel}
+          onSubmit={onSubmit}
+          title={title}
+          key={idx}
+          buttonSubmitText={buttonSubmitText}
+        />
+      ))}
+
       <main className={'management-calendar-main'}>
         <div className={classes.root}>
           <Toolbar>
             <IconButton
-              color="inherit"
-              aria-label="open drawer"
+              color={'inherit'}
+              aria-label={'open drawer'}
               onClick={handleSideBarOpen}
-              edge="start"
-              className={clsx(classes.menuButton, sidebar && classes.hide)}
+              edge={'start'}
+              className={clsx(classes.menuButton, state.sideBarIsOpen && classes.hide)}
             >
               <MenuIcon />
             </IconButton>
           </Toolbar>
           <Drawer
             className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={sidebar}
+            variant={'persistent'}
+            anchor={'left'}
+            open={state.sideBarIsOpen}
             classes={{
               paper: classes.drawerPaper
             }}
@@ -156,11 +270,16 @@ const ManagementCalendar = ({ window }) => {
             </List>
             <Divider />
             <List>
-              <ListItem role={undefined} dense button onClick={() => handleState('weekendVisible', !weekendVisible)}>
+              <ListItem
+                role={undefined}
+                dense
+                button
+                onClick={() => handleState('weekendVisible', !state.weekendVisible)}
+              >
                 <ListItemIcon>
                   <Checkbox
-                    edge="start"
-                    checked={weekendVisible}
+                    edge={'start'}
+                    checked={state.weekendVisible}
                     // tabIndex={-1}
                     disableRipple
                   />
@@ -169,7 +288,7 @@ const ManagementCalendar = ({ window }) => {
               </ListItem>
             </List>
             <List>
-              {currentEvents.map(({ start, title }) => (
+              {state.currentEvents.map(({ start, title }) => (
                 <ListItem key={'shoruid()'} className={'management-calendar-sidebar__all-events-list-items'} button>
                   <ListItemText>
                     {formatDate(start, {
@@ -192,20 +311,19 @@ const ManagementCalendar = ({ window }) => {
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
-            initialView="dayGridMonth"
+            initialView={'dayGridMonth'}
             editable={!true}
             selectable={true}
             selectMirror={true}
             dayMaxEvents={true}
-            weekends={weekendVisible}
+            weekends={state.weekendVisible}
             // initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-            select={handleDateSelect}
+            select={handleEventModalSelectClick}
             eventContent={handleEventContent} // custom render function
-            eventClick={handleEventClick}
+            eventClick={handleEventModalEditClick}
             eventsSet={handleEventsSet} // called after events are initialized/added/changed/removed
             /* you can update a remote database when these fire:
             eventAdd={function(){}}
-            
             eventRemove={function(){}}
             */
             eventChange={() => alert('changed')}
