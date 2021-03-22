@@ -62,10 +62,40 @@ header h6 {
   }
 }
 :root {
+  --primary: #61892f;
+  --dark-bg: #222629;
   --fc-border-color: #849d65de;
   --high-emphasis: #ffffffde;
   --medium-emphasis: #ffffff99;
   --disabled-emphasis: #ffffff38;
   --dark-high-emphasis: #000000de;
   --fc-page-bg-color: #b3d689fa;
+  --fc-today-bg-color: #b3d6899c;
+  --fc-button-bg-color: transparent;
+  --fc-button-active-bg-color: var(--primary);
+  --fc-button-border-color: var(--primary);
+  --fc-button-active-border-color: var(--primary);
+  --fc-button-hover-bg-color: var(--fc-border-color);
+  --fc-button-hover-border-color: var(--primary);
+  --fc-neutral-bg-color: var(--fc-today-bg-color);
+}
+
+* {
+  --scrollbarBG: var(--dark-bg);
+  --thumbBG: var(--primary);
+}
+*::-webkit-scrollbar {
+  width: 1em;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+*::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--fc-border-color);
+  border-radius: 1em;
+  border: 3px solid var(--scrollbarBG);
 }

@@ -1,5 +1,5 @@
 .management-calendar {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--high-emphasis);
 }
 /* 
 .management-calendar-sidebar-button {
@@ -44,10 +44,10 @@
   padding: 0.5em 0 !important;
 }
 .fc-daygrid-event {
-  background-color: transparent !important;
-  border-bottom: 2px solid var(--dark-high-emphasis) !important;
-  padding: 0.4em;
-  border-radius: 0em !important;
+  background-color: rgba(175, 227, 109, 0.8) !important;
+  /* border-bottom: 2px solid var(--dark-high-emphasis) !important; */
+  padding: 0.2em 0.4em;
+  /* border-radius: 0em !important; */
 }
 
 .fc-scrollgrid {
@@ -56,10 +56,56 @@
 }
 
 .fc-theme-standard td {
-  border-radius: 0.4em !important;
   border-top-right-radius: 0 !important;
 }
 
 .fc-col-header-cell {
   padding: 1em !important;
+}
+
+.fc-col-header-cell-cushion {
+  letter-spacing: 3px;
+  font-size: 1.2em;
+  background: -webkit-linear-gradient(0deg, rgba(175, 227, 109, 1) 0%, rgb(156, 199, 131) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.fc-day-today {
+  border-radius: 0 !important;
+}
+
+.fc-media-screen {
+  min-height: 88vh;
+}
+.MuiPaper-root {
+}
+
+.MuiDrawer-paper {
+  background-color: var(--dark-bg) !important;
+}
+.MuiDrawer-paperAnchorDockedLeft {
+  border-right: 2px solid var(--primary) !important;
+}
+.fc-timegrid-slot {
+  padding: 0.4em !important;
+}
+.fc-timegrid-axis-frame {
+  justify-content: center !important;
+  color: var(--primary);
+}
+/* .fc-direction-ltr .fc-daygrid-event.fc-event-end {
+  background: var(--primary);
+  color: var(--high-emphasis) !important;
+} */
+.fc-direction-ltr .fc-timegrid-col-events {
+  margin: 0 !important;
+}
+.fc-timegrid-events {
+  color: black !important;
+}
+
+.fc-event-main {
+  /* padding: 1em !important; */
+  color: rgba(0, 0, 0, 0.8) !important;
 }

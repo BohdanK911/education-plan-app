@@ -89,16 +89,15 @@ const useStyles = makeStyles(theme => ({
 const ManagementCalendar = ({ window }) => {
   const [state, setState] = useState({ weekendVisible: true, currentEvents: [], sidebar: false });
   const { weekendVisible, currentEvents, sidebar } = state;
-
   const classes = useStyles();
   const theme = useTheme();
   const handleState = (name, value) => setState(state => ({ ...state, [name]: value }));
 
   const handleEventContent = ({ timeText, event: { title } }) => (
-    <Typography>
-      {timeText}
-      {title}
-    </Typography>
+    <>
+      <Typography>{timeText}</Typography>
+      <Typography>{title}</Typography>
+    </>
   );
   const handleEventClick = ({ event: { remove, title } }) => {
     if (confirm(`Delete the event '${title}'?`)) remove();
@@ -171,7 +170,7 @@ const ManagementCalendar = ({ window }) => {
             </List>
             <List>
               {currentEvents.map(({ start, title }) => (
-                <ListItem key={'shoruid()'} className={'management-calendar-sidebar__all-events-list-items'}>
+                <ListItem key={'shoruid()'} className={'management-calendar-sidebar__all-events-list-items'} button>
                   <ListItemText>
                     {formatDate(start, {
                       year: 'numeric',
@@ -194,7 +193,7 @@ const ManagementCalendar = ({ window }) => {
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
             initialView="dayGridMonth"
-            editable={true}
+            editable={!true}
             selectable={true}
             selectMirror={true}
             dayMaxEvents={true}
@@ -210,7 +209,7 @@ const ManagementCalendar = ({ window }) => {
             eventRemove={function(){}}
             */
             eventChange={() => alert('changed')}
-            eventBackgroundColor={'#61892f'}
+            eventBackgroundColor={'#768d5cd4'}
             eventBorderColor={'transparent'}
             eventTextColor={'#222629'}
             eventColor={'#000'}
