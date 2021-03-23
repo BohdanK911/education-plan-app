@@ -127,7 +127,7 @@ const ManagementCalendar = ({ window }) => {
 
   const handleEventModalSelectCancel = () => setState(state => ({ ...state, modalSelectEventIsOpen: false }));
 
-  const handleEventModalEditCancel = () => setState(state => ({ ...state, modalSelectEventIsOpen: false }));
+  const handleEventModalEditCancel = () => setState(state => ({ ...state, modalEditEventIsOpen: false }));
 
   const handleEventModalDeleteSubmit = () => {
     setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
@@ -163,8 +163,11 @@ const ManagementCalendar = ({ window }) => {
       modalSelectEventIsOpen: true
     }));
 
-  const handleEventModalEditClick = ({ view: { getCurrentData } }) => {
-    console.log(getCurrentData());
+  const handleEventModalEditClick = e => {
+    // console.log(getCurrentData());
+    // setStart(100000);
+    console.log(e);
+    setState(state => ({ ...state, modalEditEventIsOpen: true }));
   };
 
   const handleSideBarOpen = () => setState(state => ({ ...state, sideBarIsOpen: !state.sideBarIsOpen }));
