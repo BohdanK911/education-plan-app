@@ -4,27 +4,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { createEventId } from './components/EventsUtils';
-import MenuIcon from '@material-ui/icons/Menu';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
 // import 'date-fns';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DateFnsUtils from '@date-io/date-fns';
-import MailIcon from '@material-ui/icons/Mail';
+
+import Typography from '@material-ui/core/Typography';
+
 import './index.css';
 import {
   Checkbox,
@@ -34,6 +18,7 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Switch,
   TextField
 } from '@material-ui/core';
 import Modal from 'components/Modal';
@@ -45,68 +30,10 @@ import {
 } from '@material-ui/pickers';
 import { roundToNearestMinutes } from 'date-fns/esm';
 import { addHours } from 'date-fns';
+import { themeColors } from 'app/theme';
+import DrawerCalendar from './components/Drawer';
 
-const drawerWidth = 350;
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex'
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  menuButton: {
-    marginRight: theme.spacing(2)
-  },
-  hide: {
-    display: 'none'
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    marginTop: 65
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    marginLeft: -drawerWidth
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: 0
-  }
-}));
-
-const ManagementCalendar = ({ window }) => {
+const ManagementCalendar = () => {
   const [state, setState] = useState({
     weekendVisible: true,
     currentEvents: [],
@@ -115,34 +42,29 @@ const ManagementCalendar = ({ window }) => {
     modalSelectEventIsOpen: false,
     modalEditEventIsOpen: false,
     modalEventTitleSelectIsOpen: false,
-    // currentEventSelectClick: {
-    //   // remove: () => alert('delete'),
-    //   dayEnd: Date.now(),
-    //   dayStart: Date.now(),
-    //   timeEnd: addHours(roundToNearestMinutes(Date.now(), { nearestTo: 30 }), 1),
-    //   timeStart: Date.now(),
-    //   allDay: false,
-    //   title: '',
-    //   calendar: ''
-    // },
     currentEventSelectClick: {
       title: '',
       allDay: false,
       end: '',
       start: '',
       id: 1,
-      calendar: ''
+      calendar: '',
+      backgroundColor: themeColors.main.primary,
+      textColor: '#000'
     }
   });
-  const classes = useStyles();
-  const theme = useTheme();
+  console.log(state.currentEvents);
+  const handleEventContent = ({ timeText, event: { title, allDay, backgroundColor, textColor, borderColor } }) => {
+    return (
+      <>
+        <Typography>{timeText}</Typography>
+        {allDay ? <Typography variant={'button'}>{'Event for all day'}</Typography> : null}
+        <Typography>{title}</Typography>
+      </>
+    );
+  };
 
-  const handleEventContent = ({ timeText, event: { title } }) => (
-    <>
-      <Typography>{timeText}</Typography>
-      <Typography>{title}</Typography>
-    </>
-  );
+  const handleWeekendVisible = () => setState(state => ({ ...state, weekendVisible: !state.weekendVisible }));
 
   const handleEventModalDeleteClick = ({ event: { remove, title } }) =>
     setState(state => ({ ...state, currentEventSelectClick: { remove, title }, modalDeleteEventIsOpen: true }));
@@ -164,7 +86,7 @@ const ManagementCalendar = ({ window }) => {
   // console.log();
 
   const handleEventModalSelectSubmit = () => {
-    const { title, start, calendar, end, allDay } = state.currentEventSelectClick;
+    const { title, start, calendar, end, allDay, backgroundColor } = state.currentEventSelectClick;
 
     if (state.currentEventSelectClick.title)
       calendar.addEvent({
@@ -172,6 +94,7 @@ const ManagementCalendar = ({ window }) => {
         title,
         start,
         end,
+        backgroundColor,
         allDay
       });
     setState(state => ({
@@ -409,7 +332,7 @@ const ManagementCalendar = ({ window }) => {
                 <FormGroup row>
                   <FormControlLabel
                     control={
-                      <Checkbox
+                      <Switch
                         checked={state.currentEventSelectClick.allDay}
                         onChange={({ target: { checked } }) =>
                           setState(state => ({
@@ -449,6 +372,13 @@ const ManagementCalendar = ({ window }) => {
 
   return (
     <page className={'management-calendar'}>
+      <DrawerCalendar
+        handleSideBarOpen={handleSideBarOpen}
+        handleWeekendVisible={handleWeekendVisible}
+        sideBarIsOpen={state.sideBarIsOpen}
+        weekendVisible={state.weekendVisible}
+        currentEvents={state.currentEvents}
+      />
       {modalGropeArr.map(({ isOpen, onCancel, onSubmit, title, buttonSubmitText }, idx) => (
         <Modal
           isOpen={isOpen}
@@ -459,81 +389,12 @@ const ManagementCalendar = ({ window }) => {
           buttonSubmitText={buttonSubmitText}
         />
       ))}
-
-      <main className={'management-calendar-main'}>
-        <div className={classes.root}>
-          <Toolbar>
-            <IconButton
-              color={'inherit'}
-              aria-label={'open drawer'}
-              onClick={handleSideBarOpen}
-              edge={'start'}
-              className={clsx(classes.menuButton, state.sideBarIsOpen && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-          <Drawer
-            className={classes.drawer}
-            variant={'persistent'}
-            anchor={'left'}
-            open={state.sideBarIsOpen}
-            classes={{
-              paper: classes.drawerPaper
-            }}
-          >
-            <div className={classes.drawerHeader}>
-              <IconButton onClick={handleSideBarOpen}>
-                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
-              {[
-                'Select dates and you will be prompted to create a new event',
-                'Drag, drop, and resize events',
-                'Click an event to delete it'
-              ].map(text => (
-                <ListItem button key={text}>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              <ListItem
-                role={undefined}
-                dense
-                button
-                onClick={() => handleState('weekendVisible', !state.weekendVisible)}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge={'start'}
-                    checked={state.weekendVisible}
-                    // tabIndex={-1}
-                    disableRipple
-                  />
-                </ListItemIcon>
-                <ListItemText primary={'Toggle weekends'} />
-              </ListItem>
-            </List>
-            <List>
-              {state.currentEvents.map(({ start, title }) => (
-                <ListItem key={'shoruid()'} className={'management-calendar-sidebar__all-events-list-items'} button>
-                  <ListItemText>
-                    {formatDate(start, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </ListItemText>
-                  <p>{title}</p>
-                </ListItem>
-              ))}
-            </List>
-          </Drawer>
-        </div>
+      <div className={state.sideBarIsOpen ? 'management-calendar--blur ' : ''}></div>
+      <main
+        className={
+          state.sideBarIsOpen ? 'management-calendar-main--blur management-calendar-main ' : 'management-calendar-main'
+        }
+      >
         <section className={'management-calendar-main'}>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -558,19 +419,15 @@ const ManagementCalendar = ({ window }) => {
             eventRemove={function(){}}
             */
             eventChange={() => alert('changed')}
-            eventBackgroundColor={'#768d5cd4'}
+            // eventBackgroundColor={'#000'}
             eventBorderColor={'transparent'}
-            eventTextColor={'#222629'}
-            eventColor={'#000'}
+            // eventTextColor={themeColors.main.primary}
+            eventColor={themeColors.main.secondary}
           />
         </section>
       </main>
     </page>
   );
-};
-
-ManagementCalendar.propTypes = {
-  window: PropTypes.func
 };
 
 export default ManagementCalendar;

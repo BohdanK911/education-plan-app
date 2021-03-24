@@ -1,20 +1,31 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
+export const themeColors = {
+  main: {
+    primary: '#61892f',
+    secondary: '#86c232',
+    success: '#6b6970',
+    error: '#474b4f'
+  }
+};
+
+const { primary, secondary, success, error } = themeColors.main;
+
 const theme = responsiveFontSizes(
   createMuiTheme({
     palette: {
       type: 'dark',
       primary: {
-        main: '#61892f'
+        main: primary
       },
       secondary: {
-        main: '#86c232'
+        main: secondary
       },
       success: {
-        main: '#6b6970'
+        main: success
       },
       error: {
-        main: '#474b4f'
+        main: error
       },
       contrastThreshold: 3,
       tonalOffset: 0.3
