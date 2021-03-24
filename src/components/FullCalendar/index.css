@@ -11,14 +11,14 @@
 .fc-header-toolbar {
   padding-left: 4em;
 }
-.makeStyles-root-1 {
+/* .makeStyles-root-1 {
   position: absolute;
-}
+} */
 
-.MuiToolbar-root {
+/* .MuiToolbar-root {
   display: block !important;
   padding-left: 1em !important;
-}
+} */
 .makeStyles-menuButton-4 {
   margin-top: -3px !important;
 }
@@ -26,9 +26,7 @@
   padding: 0.4em;
   font-size: 1.2em;
 }
-/* .MuiTypography-body1 {
-  font-size: 1.5em;
-} */
+
 .fc-popover-header {
   background-color: transparent !important;
 }
@@ -44,10 +42,7 @@
   padding: 0.5em 0 !important;
 }
 .fc-daygrid-event {
-  /* background-color: rgba(175, 227, 109, 0.8) !important; */
-  /* border-bottom: 2px solid var(--dark-high-emphasis) !important; */
   padding: 0.2em 0.4em;
-  /* border-radius: 0em !important; */
 }
 
 .fc-scrollgrid {
@@ -77,8 +72,6 @@
 
 .fc-media-screen {
   min-height: 88vh;
-}
-.MuiPaper-root {
 }
 
 .MuiDrawer-paper {
