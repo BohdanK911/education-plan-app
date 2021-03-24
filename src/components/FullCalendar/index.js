@@ -7,6 +7,7 @@ import { createEventId } from './components/EventsUtils';
 import MenuIcon from '@material-ui/icons/Menu';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+// import 'date-fns';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -22,10 +23,28 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import DateFnsUtils from '@date-io/date-fns';
 import MailIcon from '@material-ui/icons/Mail';
 import './index.css';
-import { Checkbox, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import {
+  Checkbox,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  TextField
+} from '@material-ui/core';
 import Modal from 'components/Modal';
+import {
+  KeyboardDatePicker,
+  KeyboardDateTimePicker,
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider
+} from '@material-ui/pickers';
+import { roundToNearestMinutes } from 'date-fns/esm';
+import { addHours } from 'date-fns';
 
 const drawerWidth = 350;
 
@@ -96,20 +115,25 @@ const ManagementCalendar = ({ window }) => {
     modalSelectEventIsOpen: false,
     modalEditEventIsOpen: false,
     modalEventTitleSelectIsOpen: false,
-    currentEventClick: {
-      // remove: () => alert('delete'),
-      title: ''
-    },
+    // currentEventSelectClick: {
+    //   // remove: () => alert('delete'),
+    //   dayEnd: Date.now(),
+    //   dayStart: Date.now(),
+    //   timeEnd: addHours(roundToNearestMinutes(Date.now(), { nearestTo: 30 }), 1),
+    //   timeStart: Date.now(),
+    //   allDay: false,
+    //   title: '',
+    //   calendar: ''
+    // },
     currentEventSelectClick: {
       title: '',
-      allDay: true,
+      allDay: false,
       end: '',
       start: '',
       id: 1,
       calendar: ''
     }
   });
-
   const classes = useStyles();
   const theme = useTheme();
 
@@ -121,7 +145,7 @@ const ManagementCalendar = ({ window }) => {
   );
 
   const handleEventModalDeleteClick = ({ event: { remove, title } }) =>
-    setState(state => ({ ...state, currentEventClick: { remove, title }, modalDeleteEventIsOpen: true }));
+    setState(state => ({ ...state, currentEventSelectClick: { remove, title }, modalDeleteEventIsOpen: true }));
 
   const handleEventModalDeleteCancel = () => setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
 
@@ -136,6 +160,7 @@ const ManagementCalendar = ({ window }) => {
   const handleEventModalEditSubmit = () => {
     setState(state => ({ ...state, modalDeleteEventIsOpen: false }));
   };
+
   // console.log();
 
   const handleEventModalSelectSubmit = () => {
@@ -156,17 +181,18 @@ const ManagementCalendar = ({ window }) => {
     }));
   };
 
-  const handleEventModalSelectClick = ({ view: { calendar }, startStr: start, endStr: end, allDay }) =>
+  const handleEventModalSelectClick = ({ view: { calendar }, startStr: start, endStr: end, allDay }) => {
+    console.log(end);
     setState(state => ({
       ...state,
-      currentEventSelectClick: { ...state.currentEventSelectClick, start, end, allDay, calendar },
+      currentEventSelectClick: { ...state.currentEventSelectClick, start, end, calendar, allDay },
       modalSelectEventIsOpen: true
     }));
-
+  };
   const handleEventModalEditClick = e => {
     // console.log(getCurrentData());
     // setStart(100000);
-    console.log(e);
+    console.log(e.view.getCurrentData());
     setState(state => ({ ...state, modalEditEventIsOpen: true }));
   };
 
@@ -179,26 +205,95 @@ const ManagementCalendar = ({ window }) => {
       isOpen: state.modalDeleteEventIsOpen,
       onCancel: handleEventModalDeleteCancel,
       onSubmit: handleEventModalDeleteSubmit,
-      title: `Did you sure that you wanna delete ${state.currentEventClick.title} event?`,
+      title: `Did you sure that you wanna delete ${state.currentEventSelectClick.title} event?`,
       buttonSubmitText: 'Delete'
     },
     {
       isOpen: state.modalEditEventIsOpen,
       onCancel: handleEventModalEditCancel,
       onSubmit: handleEventModalEditSubmit,
-      title: 'You can easily change the event'
-    },
-    {
-      isOpen: state.modalSelectEventIsOpen,
-      onCancel: handleEventModalSelectCancel,
-      onSubmit: handleEventModalSelectSubmit,
       title: (
         <>
-          <DialogTitle id={'form-dialog-title'}> Please write a event title.</DialogTitle>
+          <DialogTitle id={'form-dialog-title'}> Please edit a event title.</DialogTitle>
           {/* <DialogContent> */}
           {/* <DialogContentText>
               <Typography variant={'body2'} component={'p'}></Typography>
             </DialogContentText> */}
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify={'space-between'} spacing={2}>
+              <Grid item xs={6}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant={'inline'}
+                  format={'MM/dd/yyyy'}
+                  margin={'normal'}
+                  label={'Date start event'}
+                  value={state.currentEventSelectClick.dayStart}
+                  onChange={date =>
+                    setState(state => ({
+                      ...state,
+                      currentEventSelectClick: { ...state.currentEventSelectClick, dayStart: date }
+                    }))
+                  }
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant={'inline'}
+                  format={'MM/dd/yyyy'}
+                  margin={'normal'}
+                  label={'Data end event'}
+                  value={state.currentEventSelectClick.dayEnd}
+                  onChange={date =>
+                    setState(state => ({
+                      ...state,
+                      currentEventSelectClick: { ...state.currentEventSelectClick, dayEnd: date }
+                    }))
+                  }
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date'
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <KeyboardTimePicker
+                  margin={'normal'}
+                  label={'Time start event'}
+                  value={state.currentEventSelectClick.timeStart}
+                  onChange={date =>
+                    setState(state => ({
+                      ...state,
+                      currentEventSelectClick: { ...state.currentEventSelectClick, timeStart: date }
+                    }))
+                  }
+                  KeyboardButtonProps={{
+                    'aria-label': 'change time'
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <KeyboardTimePicker
+                  margin={'normal'}
+                  label={'Time end event'}
+                  value={state.currentEventSelectClick.timeEnd}
+                  onChange={date =>
+                    setState(state => ({
+                      ...state,
+                      currentEventSelectClick: { ...state.currentEventSelectClick, timeEnd: date }
+                    }))
+                  }
+                  KeyboardButtonProps={{
+                    'aria-label': 'change time'
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </MuiPickersUtilsProvider>
+
           <TextField
             autoFocus
             margin={'dense'}
@@ -213,6 +308,139 @@ const ManagementCalendar = ({ window }) => {
               }))
             }
           />
+          {/* </DialogContent> */}
+        </>
+      )
+    },
+    {
+      isOpen: state.modalSelectEventIsOpen,
+      onCancel: handleEventModalSelectCancel,
+      onSubmit: handleEventModalSelectSubmit,
+      title: (
+        <>
+          <DialogTitle id={'form-dialog-title'}> Please write a event title.</DialogTitle>
+          {/* <DialogContent> */}
+          {/* <DialogContentText>
+              <Typography variant={'body2'} component={'p'}></Typography>
+            </DialogContentText> */}
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid container justify={'space-between'} spacing={2}>
+              <Grid item xs={6}>
+                {!state.currentEventSelectClick.allDay ? (
+                  <>
+                    <KeyboardDateTimePicker
+                      ampm={false}
+                      disableToolbar
+                      variant={'inline'}
+                      format={'yyyy/MM/dd HH:mm'}
+                      margin={'normal'}
+                      label={'Date start event'}
+                      value={state.currentEventSelectClick.start}
+                      onChange={date =>
+                        setState(state => ({
+                          ...state,
+                          currentEventSelectClick: { ...state.currentEventSelectClick, start: date }
+                        }))
+                      }
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date'
+                      }}
+                    />
+                    <KeyboardDateTimePicker
+                      ampm={false}
+                      disableToolbar
+                      variant={'inline'}
+                      format={'yyyy/MM/dd HH:mm'}
+                      margin={'normal'}
+                      label={'Date start event'}
+                      value={state.currentEventSelectClick.end}
+                      onChange={date =>
+                        setState(state => ({
+                          ...state,
+                          currentEventSelectClick: { ...state.currentEventSelectClick, end: date }
+                        }))
+                      }
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date'
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant={'inline'}
+                      format={'MM/dd/yyyy'}
+                      margin={'normal'}
+                      label={'Data end event'}
+                      value={state.currentEventSelectClick.dayStart}
+                      onChange={date =>
+                        setState(state => ({
+                          ...state,
+                          currentEventSelectClick: { ...state.currentEventSelectClick, dayStart: date }
+                        }))
+                      }
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date'
+                      }}
+                    />
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant={'inline'}
+                      format={'MM/dd/yyyy'}
+                      margin={'normal'}
+                      label={'Data end event'}
+                      value={state.currentEventSelectClick.dayEnd}
+                      onChange={date =>
+                        setState(state => ({
+                          ...state,
+                          currentEventSelectClick: { ...state.currentEventSelectClick, dayEnd: date }
+                        }))
+                      }
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date'
+                      }}
+                    />
+                  </>
+                )}
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={state.currentEventSelectClick.allDay}
+                        onChange={({ target: { checked } }) =>
+                          setState(state => ({
+                            ...state,
+                            currentEventSelectClick: { ...state.currentEventSelectClick, allDay: checked }
+                          }))
+                        }
+                      />
+                    }
+                    label={'Is event allDay ?'}
+                  />
+                </FormGroup>
+              </Grid>
+            </Grid>
+          </MuiPickersUtilsProvider>
+          <div style={{ marginTop: '1em' }}>
+            <TextField
+              autoFocus
+              margin={'dense'}
+              label={'Event text'}
+              type={'text'}
+              fullWidth
+              value={state.currentEventSelectClick.title}
+              onChange={({ target: { value } }) =>
+                setState(state => ({
+                  ...state,
+                  currentEventSelectClick: { ...state.currentEventSelectClick, title: value }
+                }))
+              }
+            />
+          </div>
           {/* </DialogContent> */}
         </>
       )
