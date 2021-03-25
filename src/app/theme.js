@@ -14,7 +14,7 @@ const theme = responsiveFontSizes(
         main: '#6b6970'
       },
       error: {
-        main: '#474b4f'
+        main: '#f34333'
       },
       contrastThreshold: 3,
       tonalOffset: 0.3
